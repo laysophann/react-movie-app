@@ -3,36 +3,32 @@ import MovieCard from "./components/MovieCard";
 import "./App.css";
 import searchIcon from "./search-icon.svg";
 
-const API_URL = "http://www.omdbapi.com/?apikey=67c1f16b";
+const API_URL = "http://www.omdbapi.com?apikey=b6003d8a";
 
-function App() {
+const App = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [movies, setMovies] = useState([]);
-
-  const searchMovies = async (title) => {
-    const res = await fetch(`${API_URL}&s=${title}`);
-    const data = await res.json();
-    if (data.Search) {
-      setMovies(data.Search);
-    } else {
-      setMovies([]);
-    }
-    console.log("movies data:", data.Search);
-  };
 
   useEffect(() => {
     searchMovies("Batman");
   }, []);
 
+  const searchMovies = async (title) => {
+    const response = await fetch(`${API_URL}&s=${title}`);
+    const data = await response.json();
+
+    setMovies(data.Search);
+  };
+
   return (
     <div className="app">
-      <h1>Movie App</h1>
+      <h1>MovieLand</h1>
+
       <div className="search">
         <input
-          type="text"
-          placeholder="Search movies"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Search for movies"
         />
         <img
           src={searchIcon}
@@ -40,7 +36,8 @@ function App() {
           onClick={() => searchMovies(searchTerm)}
         />
       </div>
-      {movies.length > 0 ? (
+
+      {movies?.length > 0 ? (
         <div className="container">
           {movies.map((movie) => (
             <MovieCard movie={movie} key={movie.imdbID} />
@@ -53,6 +50,6 @@ function App() {
       )}
     </div>
   );
-}
+};
 
 export default App;
